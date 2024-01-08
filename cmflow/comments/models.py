@@ -5,6 +5,8 @@ from django.db import models
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_name = models.CharField(max_length=100)
+    email = models.EmailField()
     parent_comment = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True
     )

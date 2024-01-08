@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bootstrap 5.3 Example</title>
+    <title>Test</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Font Awesome -->
@@ -9,12 +9,57 @@
 </head>
 <body>
     <div class="container">
-        {% for comment in comments %}
-            <!-- Only render top-level comments initially -->
-            {% if not comment.parent_comment %}
-                {% include 'comment.html' with comment=comment %}
-            {% endif %}
-        {% endfor %}
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-3">
+                {% include 'form.html' %}
+            </div>
+            <div class="col-lg-9">
+                <div class="sorting-buttons mb-3">
+                    <!-- Sort by User Name -->
+                    <a href="?sort=user__username&direction=asc" class="btn btn-primary"><i class="fas fa-sort-alpha-up"></i> User Name</a>
+                    <a href="?sort=user__username&direction=desc" class="btn btn-primary"><i class="fas fa-sort-alpha-down"></i> User Name</a>
+
+                    <!-- Sort by E-mail -->
+                    <a href="?sort=user__email&direction=asc" class="btn btn-primary"><i class="fas fa-sort-alpha-up"></i> E-mail</a>
+                    <a href="?sort=user__email&direction=desc" class="btn btn-primary"><i class="fas fa-sort-alpha-down"></i> E-mail</a>
+
+                    <!-- Sort by Date Added -->
+                    <a href="?sort=date_added&direction=asc" class="btn btn-primary"><i class="fas fa-sort-numeric-up"></i> Date</a>
+                    <a href="?sort=date_added&direction=desc" class="btn btn-primary"><i class="fas fa-sort-numeric-down"></i> Date</a>
+                </div>
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h4 class="text-center mb-4 pb-2">Comments section</h4>
+                        <div class="row">
+                            <div class="col">
+                                {% for comment in comments %}
+                                    {% if not comment.parent_comment %}
+                                        {% include 'comment.html' with comment=comment %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if comments.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ comments.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ comments.number }} of {{ comments.paginator.num_pages }}.
+                        </span>
+
+                        {% if comments.has_next %}
+                            <a href="?page={{ comments.next_page_number }}">next</a>
+                            <a href="?page={{ comments.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

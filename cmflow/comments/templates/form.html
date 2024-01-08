@@ -1,6 +1,6 @@
 <div class="container">
     <h2>Post a Comment</h2>
-    <form action="{% url 'your_comment_submission_view' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'comment_add' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
             <label for="userName" class="form-label">User Name</label>
@@ -26,6 +26,9 @@
             <label for="file" class="form-label">Attach File</label>
             <input class="form-control" type="file" id="file" name="file">
         </div>
+        <!-- Hidden field for reply ID -->
+        <input type="hidden" id="replyId" name="reply_id" value="REPLY_ID_VALUE">
+        <!-- Replace REPLY_ID_VALUE with the actual reply ID or the variable containing it -->
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
