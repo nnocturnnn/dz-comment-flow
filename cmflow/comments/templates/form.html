@@ -13,9 +13,16 @@
             <input type="email" class="form-control" id="email" name="email" required>
         </div>
         <div class="mb-3">
+            <div class="toolbar">
+                <button onclick="wrapTag('i')">[i]</button>
+                <button onclick="wrapTag('strong')">[strong]</button>
+                <button onclick="wrapTag('code')">[code]</button>
+                <button onclick="wrapTag('a')">[a]</button>
+            </div>
             <label for="text" class="form-label">Comment</label>
             <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
         </div>
+
         <div class="mb-3">
             <label for="homePageUrl" class="form-label">Home Page URL</label>
             <input type="url" class="form-control" id="homePageUrl" name="home_page_url">
@@ -34,6 +41,21 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+<script>
+    function wrapTag(tag) {
+        var textArea = document.getElementById('text');
+        var selectedText = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
+        var beforeText = textArea.value.substring(0, textArea.selectionStart);
+        var afterText = textArea.value.substring(textArea.selectionEnd);
+
+        if (tag === 'a') {
+            var url = prompt('Enter the URL:', 'http://');
+            textArea.value = beforeText + '<a href="' + url + '">' + selectedText + '</a>' + afterText;
+        } else {
+            textArea.value = beforeText + '<' + tag + '>' + selectedText + '</' + tag + '>' + afterText;
+        }
+    }
+</script>
 <script>
 function postComment(event) {
     event.preventDefault();  // Prevent the default form submission
