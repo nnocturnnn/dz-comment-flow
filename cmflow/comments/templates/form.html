@@ -58,9 +58,22 @@
     }
 </script>
 <script>
-    function updatePreview() {
+function escapeHTML(text) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function updatePreview() {
     var inputText = document.getElementById('text').value;
-    document.getElementById('preview').innerHTML = inputText;
+    var escapedText = escapeHTML(inputText);
+    document.getElementById('preview').textContent = escapedText;
 }
 </script>
 <script>
