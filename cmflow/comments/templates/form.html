@@ -1,0 +1,75 @@
+<div class="container">
+    <h2 class="mt-5">Post a Comment</h2>
+    <p id="replyMessage"></p>
+    <form id="commentForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" id="jwtToken" value="{{ jwt_token }}">
+        <div class="mb-3">
+            <label for="userName" class="form-label">User Name</label>
+            <input type="text" class="form-control" id="userName" name="user_name" pattern="[A-Za-z0-9]+" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">E-mail</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Comment</label>
+            <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="homePageUrl" class="form-label">Home Page URL</label>
+            <input type="url" class="form-control" id="homePageUrl" name="home_page_url">
+        </div>
+        <div class="mb-3">
+            <label for="photo" class="form-label">Attach Photo</label>
+            <input class="form-control" type="file" id="photo" name="photo" accept="image/*">
+        </div>
+        <div class="mb-3">
+            <label for="file" class="form-label">Attach File</label>
+            <input class="form-control" type="file" id="file" name="file">
+        </div>
+        <!-- Hidden field for reply ID -->
+        <input type="hidden" id="replyId" name="reply_id" value="REPLY_ID_VALUE">
+        <!-- Replace REPLY_ID_VALUE with the actual reply ID or the variable containing it -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+<script>
+function postComment(event) {
+    event.preventDefault();  // Prevent the default form submission
+
+    var formData = new FormData(document.getElementById('commentForm'));
+    const jwtToken = document.getElementById('jwtToken').value;  // Retrieve the JWT token
+
+    fetch('/comment_add', {
+        method: 'POST',
+        body: formData,  // Send the form data
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`  // Include the JWT token in the Authorization header
+        },
+        credentials: 'include'  // Necessary for cookies (including CSRF token) to be sent
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.message);  // Log the response message
+        // Clear the form fields
+        document.getElementById('commentForm').reset();
+        // Display a success message
+        displayFeedback('Comment posted successfully!', 'success');
+    })
+    .catch(error => {
+        console.error('Error:', error);  // Log any errors
+        // Display an error message
+        displayFeedback('Failed to post comment: ' + error, 'danger');
+    });
+}
+
+// Add event listener to the form
+document.getElementById('commentForm').addEventListener('submit', postComment);
+
+</script>

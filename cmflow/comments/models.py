@@ -1,10 +1,10 @@
-from django.contrib.auth.models import User
 from django.db import models
 
 
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_name = models.CharField(max_length=100)
+    email = models.EmailField()
     parent_comment = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True
     )
@@ -25,5 +25,5 @@ class Attachment(models.Model):
 class Like(models.Model):
     like_id = models.AutoField(primary_key=True)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.CharField(max_length=100, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)

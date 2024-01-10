@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "comments",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "comments.middlewares.AnonymousUserMiddleware",
 ]
 
 ROOT_URLCONF = "cmflow.urls"
@@ -124,3 +126,17 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Google Cloud Storage configurations
+GS_BUCKET_NAME = ""
+GS_PROJECT_ID = ""
+
+# Assuming you're using Google Application Default Credentials
+# If not, you'll need to specify your service account file path
+GS_CREDENTIALS = ""
+
+# Tell Django to use Google Cloud Storage for file storage
+DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+
+# Optionally, set file access control
+GS_DEFAULT_ACL = "publicRead"
