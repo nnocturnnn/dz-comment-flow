@@ -1,4 +1,7 @@
+import os
+
 import jwt
+import requests
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden, JsonResponse
@@ -31,6 +34,19 @@ def base_view(request):
 
 @require_http_methods(["POST"])
 def comment_add(request):
+    recaptcha_response = request.POST.get("g-recaptcha-response")
+    data = {
+        "secret": os.getenv("RECAPTCHA_SECRET_KEY"),
+        "response": recaptcha_response,
+    }
+    result = requests.post(
+        "https://www.google.com/recaptcha/api/siteverify", data=data
+    )  # noqa: E501
+    result_json = result.json()
+
+    if not result_json.get("success"):
+        return JsonResponse({"error": "Invalid CAPTCHA"}, status=400)
+
     # Retrieve the JWT token from the session
     token = request.session.get("jwt_token")
     if not token:
