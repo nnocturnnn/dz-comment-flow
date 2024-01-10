@@ -51,6 +51,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "comments.middlewares.AnonymousUserMiddleware",
 ]
 
 ROOT_URLCONF = "cmflow.urls"

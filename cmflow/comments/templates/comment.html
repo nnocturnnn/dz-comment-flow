@@ -1,32 +1,37 @@
 
 <div class="col">
     <div class="d-flex flex-start">
-        <img class="rounded-circle shadow-1-strong me-3" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="avatar" width="65" height="65" />
+        <img class="rounded-circle shadow-1-strong me-3" src="https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png" alt="avatar" width="65" height="65" />
         <div class="flex-grow-1 flex-shrink-1">
             <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <p class="mb-1">
-                        {{ comment.user.username }} <span class="small">- {{ comment.date_added }}</span>
+                        {{ comment.user_name }} <span class="small">- {{ comment.date_added }}</span>
                         {% if comment.home_page_url %}
                             <a href="{{ comment.home_page_url }}"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg></a>
                         {% endif %}
-                        {% if comment.like_count > 0 %}
-                        {{ comment.like_count }}
+                        {% if not forloop.parentloop %}
+                            <span id="like-count-{{ comment.comment_id }}">{{ comment.like_count }}</span>
+                        {% else %}
+                            <span id="like-count-{{ comment.comment_id }}">{{ child_like_count }}</span>
                         {% endif %}
-                        <div onclick="likePost(1);" style="cursor:pointer;">  <!-- Replace 1 with the actual comment ID -->
-                            <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
-                                <path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8v-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3c4.2-4.8 8.7-9.2 13.5-13.3c3.7-3.2 7.5-6.2 11.5-9c0 0 0 0 0 0C313.1 47 353.4 37.9 392.8 45.4C462 58.6 512 119.1 512 189.5v3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.9-30.2 11.9s-22-4.2-30.2-11.9zM239.1 145c-.4-.3-.7-.7-1-1.1l-17.8-20c0 0-.1-.1-.1-.1c0 0 0 0 0 0c-23.1-25.9-58-37.7-92-31.2C81.6 101.5 48 142.1 48 189.5v3.3c0 28.5 11.9 55.8 32.8 75.2L256 430.7 431.2 268c20.9-19.4 32.8-46.7 32.8-75.2v-3.3c0-47.3-33.6-88-80.1-96.9c-34-6.5-69 5.4-92 31.2c0 0 0 0-.1 .1s0 0-.1 .1l-17.8 20c-.3 .4-.7 .7-1 1.1c-4.5 4.5-10.6 7-16.9 7s-12.4-2.5-16.9-7z"/>
-                            </svg>
+                        <div id="like-button-{{ comment.comment_id }}" style="cursor:pointer; display: {% if not comment.is_liked %}block{% else %}none{% endif %};">
+                            <div onclick="likePost({{ comment.comment_id }});">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
+                                    <path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8v-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3c4.2-4.8 8.7-9.2 13.5-13.3c3.7-3.2 7.5-6.2 11.5-9c0 0 0 0 0 0C313.1 47 353.4 37.9 392.8 45.4C462 58.6 512 119.1 512 189.5v3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.9-30.2 11.9s-22-4.2-30.2-11.9zM239.1 145c-.4-.3-.7-.7-1-1.1l-17.8-20c0 0-.1-.1-.1-.1c0 0 0 0 0 0c-23.1-25.9-58-37.7-92-31.2C81.6 101.5 48 142.1 48 189.5v3.3c0 28.5 11.9 55.8 32.8 75.2L256 430.7 431.2 268c20.9-19.4 32.8-46.7 32.8-75.2v-3.3c0-47.3-33.6-88-80.1-96.9c-34-6.5-69 5.4-92 31.2c0 0 0 0-.1 .1s0 0-.1 .1l-17.8 20c-.3 .4-.7 .7-1 1.1c-4.5 4.5-10.6 7-16.9 7s-12.4-2.5-16.9-7z"/>
+                                </svg>
+                            </div>
                         </div>
-
                         <!-- Unlike button -->
-                        <div onclick="unlikePost(1);" style="cursor:pointer;">  <!-- Replace 1 with the actual comment ID -->
-                            <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
-                                <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/>
-                            </svg>
+                        <div id="unlike-button-{{ comment.comment_id }}" style="cursor:pointer; display: {% if comment.is_liked %}block{% else %}none{% endif %};">
+                            <div onclick="unlikePost({{ comment.comment_id }});">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
+                                    <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/>
+                                </svg>
+                            </div>
                         </div>
                     </p>
-                    <a href="#!" class="replyLink" data-reply-id="{{ comment.comment_id }}"><i class="fas fa-reply fa-xs"></i><span class="small"></span></a>
+                    <a href="#!" class="replyLink" data-reply-id="{{ comment.comment_id }}"><i style="color: black;" class="fas fa-reply fa-xs"></i><span class="small"></span></a>
                 </div>
                 <p class="small mb-0">
                     {{ comment.text }}
@@ -34,28 +39,119 @@
             </div>
             <!-- Render child comments -->
             {% for child in comment.comment_set.all %}
-                {% include 'comment.html' with comment=child %}
+                {% with child_like_count=child.like_set.count %}
+                    {% include 'comment.html' with comment=child like_count=child_like_count %}
+                {% endwith %}
             {% endfor %}
         </div>
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get all reply links
-        var replyLinks = document.querySelectorAll('.replyLink');
-        var replyIdInput = document.getElementById('replyId');
+document.addEventListener('DOMContentLoaded', function() {
+    var parentElement = document.body; // Adjust this to the closest common ancestor of your .replyLink elements
+    var replyIdInput = document.getElementById('replyId');
+    var replyMessage = document.getElementById('replyMessage'); // Get the h3 element
 
-        // Define the action for when any reply link is clicked
-        replyLinks.forEach(function(link) {
-            link.addEventListener('click', function() {
-                // Get the reply ID from the data-reply-id attribute
-                var replyId = this.getAttribute('data-reply-id');
-                replyIdInput.value = replyId;
+    parentElement.addEventListener('click', function(event) {
+        var target = event.target;
 
-                // Optional: Display a message to the user or update the UI
-                alert('You replied to comment ID: ' + replyId);
-            });
-        });
+        // Traverse up the DOM to find the .replyLink ancestor, if it exists
+        while (target && target !== parentElement) {
+            if (target.matches('.replyLink')) {
+                var replyId = target.getAttribute('data-reply-id');
+                replyIdInput.value = replyId; // Set the reply ID in the input field
+
+                // Update the h3 element with a message
+                replyMessage.textContent = 'You are replying to comment ID: ' + replyId;
+
+                return; // Stop the loop after setting the value and updating the message
+            }
+            target = target.parentElement;
+        }
     });
-</script>
+});
 
+document.addEventListener('DOMContentLoaded', function() {
+    var parentElement = document.body; // Adjust this to the closest common ancestor of your .replyLink elements
+    var replyIdInput = document.getElementById('replyId');
+
+    parentElement.addEventListener('click', function(event) {
+        var target = event.target;
+
+        // Traverse up the DOM to find the .replyLink ancestor, if it exists
+        while (target && target !== parentElement) {
+            if (target.matches('.replyLink')) {
+                var replyId = target.getAttribute('data-reply-id');
+                replyIdInput.value = replyId; // Set the reply ID in the input field
+                return; // Stop the loop after setting the value
+            }
+            target = target.parentElement;
+        }
+    });
+});
+
+</script>
+<script>
+function updateLikeCount(commentId, newLikeCount) {
+    console.log("Updating like count for comment", commentId, "to", newLikeCount); // Debugging
+
+    const likeCountElement = document.getElementById('like-count-' + commentId);
+    console.log("Found like count element:", likeCountElement); // Debugging
+
+    if (likeCountElement) {
+        likeCountElement.innerText = newLikeCount;
+    } else {
+        console.error("Failed to find like count element for commentId:", commentId);
+    }
+}
+
+function likePost(commentId) {
+    fetch('/like_add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: 'comment_id=' + commentId
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateLikeCount(commentId, data.new_like_count);
+    })
+    .catch(error => console.error('Error:', error));
+
+    const likeButton = document.getElementById('like-button-' + commentId);
+    const unlikeButton = document.getElementById('unlike-button-' + commentId);
+
+    likeButton.style.display = 'none';
+    unlikeButton.style.display = 'block';
+}
+
+
+function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+function unlikePost(commentId) {
+    fetch('/like_remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: 'comment_id=' + commentId
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateLikeCount(commentId, data.new_like_count);
+    })
+    .catch(error => console.error('Error:', error));
+
+    const likeButton = document.getElementById('like-button-' + commentId);
+    const unlikeButton = document.getElementById('unlike-button-' + commentId);
+
+    likeButton.style.display = 'block';
+    unlikeButton.style.display = 'none';
+
+}
+</script>

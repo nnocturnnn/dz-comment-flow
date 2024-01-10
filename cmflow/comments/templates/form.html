@@ -1,7 +1,9 @@
 <div class="container">
-    <h2>Post a Comment</h2>
-    <form action="{% url 'comment_add' %}" method="post" enctype="multipart/form-data">
+    <h2 class="mt-5">Post a Comment</h2>
+    <p id="replyMessage"></p>
+    <form id="commentForm" enctype="multipart/form-data">
         {% csrf_token %}
+        <input type="hidden" id="jwtToken" value="{{ jwt_token }}">
         <div class="mb-3">
             <label for="userName" class="form-label">User Name</label>
             <input type="text" class="form-control" id="userName" name="user_name" pattern="[A-Za-z0-9]+" required>
@@ -32,3 +34,42 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+<script>
+function postComment(event) {
+    event.preventDefault();  // Prevent the default form submission
+
+    var formData = new FormData(document.getElementById('commentForm'));
+    const jwtToken = document.getElementById('jwtToken').value;  // Retrieve the JWT token
+
+    fetch('/comment_add', {
+        method: 'POST',
+        body: formData,  // Send the form data
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`  // Include the JWT token in the Authorization header
+        },
+        credentials: 'include'  // Necessary for cookies (including CSRF token) to be sent
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.message);  // Log the response message
+        // Clear the form fields
+        document.getElementById('commentForm').reset();
+        // Display a success message
+        displayFeedback('Comment posted successfully!', 'success');
+    })
+    .catch(error => {
+        console.error('Error:', error);  // Log any errors
+        // Display an error message
+        displayFeedback('Failed to post comment: ' + error, 'danger');
+    });
+}
+
+// Add event listener to the form
+document.getElementById('commentForm').addEventListener('submit', postComment);
+
+</script>
