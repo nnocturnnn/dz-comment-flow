@@ -8,11 +8,16 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
+from .misc import upload_to_bucket
 from .models import Attachment, Comment, Like  # noqa: F401
 
 
 def base_view(request):
-    comments_list = Comment.objects.all().order_by("-date_added")
+    comments_list = (
+        Comment.objects.prefetch_related("attachments")
+        .all()
+        .order_by("-date_added")  # noqa: E501
+    )
     paginator = Paginator(comments_list, 25)
 
     page_number = request.GET.get("page")
@@ -24,6 +29,8 @@ def base_view(request):
             user=request.session.get("user_id"), comment=comment
         ).exists()
         comment.save()
+        if comment.attachments.all():
+            print(comment.attachments.all()[0])
 
     context = {
         "comments": comments,
@@ -94,13 +101,19 @@ def comment_add(request):
         comment.save()
 
         if photo:
+            photo_url = upload_to_bucket(photo.name, photo, photo.content_type)
             attachment = Attachment(
-                comment=comment, file_path=photo, file_type=photo.content_type
+                comment=comment,
+                file_path=photo_url,
+                file_type=photo.content_type,  # noqa: E501
             )
             attachment.save()
-        elif file:
+        if file:
+            file_url = upload_to_bucket(file.name, file, file.content_type)
             attachment = Attachment(
-                comment=comment, file_path=file, file_type=file.content_type
+                comment=comment,
+                file_path=file_url,
+                file_type=file.content_type,  # noqa: E501
             )
             attachment.save()
 
