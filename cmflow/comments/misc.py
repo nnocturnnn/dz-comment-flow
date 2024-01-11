@@ -2,6 +2,8 @@ import os
 import re
 from typing import List
 
+from django.conf import settings
+from google.cloud import storage
 from lxml import html
 from PIL import Image
 
@@ -69,3 +71,17 @@ def scale_image(image_path: str, max_width: int, max_height: int) -> None:
 
         img = img.resize(new_size, Image.ANTIALIAS)
         img.save("scaled_" + image_path)
+
+
+def upload_to_bucket(blob_name, file_obj, content_type):
+    """Upload file to Google Cloud Storage bucket."""
+    storage_client = storage.Client.from_service_account_json(
+        os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    )
+    bucket = storage_client.bucket(settings.GS_BUCKET_NAME)
+    blob = bucket.blob(blob_name)
+
+    blob.upload_from_file(file_obj, content_type=content_type)
+    blob.make_public()
+
+    return blob.public_url

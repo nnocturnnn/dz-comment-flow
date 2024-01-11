@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,12 +131,14 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Google Cloud Storage configurations
-GS_BUCKET_NAME = ""
-GS_PROJECT_ID = ""
+GS_BUCKET_NAME = "test-comment"
+GS_PROJECT_ID = "carbon-shadow-305701"
 
 # Assuming you're using Google Application Default Credentials
 # If not, you'll need to specify your service account file path
-GS_CREDENTIALS = ""
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+)
 
 # Tell Django to use Google Cloud Storage for file storage
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
