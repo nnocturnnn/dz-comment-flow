@@ -93,6 +93,17 @@ def comment_add(request):
         )
         comment.save()
 
+        if photo:
+            attachment = Attachment(
+                comment=comment, file_path=photo, file_type=photo.content_type
+            )
+            attachment.save()
+        elif file:
+            attachment = Attachment(
+                comment=comment, file_path=file, file_type=file.content_type
+            )
+            attachment.save()
+
         return redirect("/")
 
     except jwt.ExpiredSignatureError:
