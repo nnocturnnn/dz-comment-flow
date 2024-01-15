@@ -28,8 +28,7 @@ def base_view(request):
     sort = "date_added" if sort not in valid_sort_fields else sort
     order_by_field = sort if direction == "asc" else f"-{sort}"
     comments_list = Comment.objects.prefetch_related("attachments").order_by(
-        order_by_field
-    )  # noqa: E501
+        order_by_field)  # noqa: E501
 
     paginator = Paginator(comments_list, 25)
 
@@ -39,8 +38,7 @@ def base_view(request):
     for comment in comments:
         comment.like_count = Like.objects.filter(comment=comment).count()
         comment.is_liked = Like.objects.filter(
-            user=request.session.get("user_id"), comment=comment
-        ).exists()
+            user=request.session.get("user_id"), comment=comment).exists()
         comment.save()
 
     context = {
@@ -62,9 +60,8 @@ def comment_add(request):
         "secret": os.getenv("RECAPTCHA_SECRET_KEY"),
         "response": recaptcha_response,
     }
-    result = requests.post(
-        "https://www.google.com/recaptcha/api/siteverify", data=data
-    )  # noqa: E501
+    result = requests.post("https://www.google.com/recaptcha/api/siteverify",
+                           data=data)  # noqa: E501
     result_json = result.json()
 
     if not result_json.get("success"):
@@ -87,11 +84,9 @@ def comment_add(request):
         email = request.POST.get("email")
         text = request.POST.get("text")
         photo = (  # noqa: F841
-            request.FILES.get("photo") if "photo" in request.FILES else None
-        )
+            request.FILES.get("photo") if "photo" in request.FILES else None)
         file = (  # noqa: F841
-            request.FILES.get("file") if "file" in request.FILES else None
-        )
+            request.FILES.get("file") if "file" in request.FILES else None)
         home_page_url = request.POST.get("home_page_url")
         parent_comment_id = request.POST.get("reply_id")
 
@@ -99,12 +94,10 @@ def comment_add(request):
         if parent_comment_id:
             try:
                 parent_comment = Comment.objects.get(
-                    comment_id=parent_comment_id
-                )  # noqa: E501
+                    comment_id=parent_comment_id)  # noqa: E501
             except Comment.DoesNotExist:
-                return JsonResponse(
-                    {"message": "Parent comment not found"}, status=404
-                )  # noqa: E501
+                return JsonResponse({"message": "Parent comment not found"},
+                                    status=404)  # noqa: E501
 
         # Create and save the comment
         comment = Comment(
@@ -151,8 +144,7 @@ def like_add(request):
     """
     comment_id = request.POST.get("comment_id")
     user_id = request.session.get(
-        "user_id", request.user.id
-    )  # Use session user_id for anonymous users
+        "user_id", request.user.id)  # Use session user_id for anonymous users
 
     # Ensure the comment exists
     try:
@@ -179,8 +171,7 @@ def like_remove(request):
     """
     comment_id = request.POST.get("comment_id")
     user_id = request.session.get(
-        "user_id", request.user.id
-    )  # Use session user_id for anonymous users
+        "user_id", request.user.id)  # Use session user_id for anonymous users
 
     # Ensure the comment exists
     try:
