@@ -15,10 +15,10 @@
         </div>
         <div class="mb-3">
             <div class="toolbar">
-                <button onclick="wrapTag('i')">[i]</button>
-                <button onclick="wrapTag('strong')">[strong]</button>
-                <button onclick="wrapTag('code')">[code]</button>
-                <button onclick="wrapTag('a')">[a]</button>
+                <button class="btn btn-primary" onclick="wrapTag('i')">[i]</button>
+                <button class="btn btn-primary" onclick="wrapTag('strong')">[strong]</button>
+                <button class="btn btn-primary" onclick="wrapTag('code')">[code]</button>
+                <button class="btn btn-primary" onclick="wrapTag('a')">[a]</button>
             </div>
             <label for="text" class="form-label">Comment</label>
             <textarea class="form-control" id="text" name="text" rows="3" required oninput="updatePreview()"></textarea>
@@ -40,7 +40,7 @@
         <input type="hidden" id="replyId" name="reply_id" value="">
         <div class="g-recaptcha" data-sitekey="6Ld1uEwpAAAAAI_TGl4DY__m1ZpcPcQNZ5KJOfhy"></div>
         <!-- Replace REPLY_ID_VALUE with the actual reply ID or the variable containing it -->
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary submitform">Submit</button>
     </form>
 </div>
 <script>

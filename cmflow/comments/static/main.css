@@ -1,0 +1,40 @@
+
+body {
+    background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+}
+
+.card {
+    background-color: #ffffff21 !important;
+}
+
+.sorting-buttons a, .toolbar button  {
+    background-color: #ffffff21 !important;
+    color: black !important;
+    border: none !important;
+}
+
+.sorting-buttons a:hover, .toolbar button:hover {
+    background-color: #53535321 !important;
+}
+
+.submitform {
+    flex: 1 1 auto;
+    margin: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    color: rgb(5, 0, 0);
+    background-image: linear-gradient(to right, #f6d365 0%, #fda085 51%, #f6d365 100%);
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+}
+
+.submitform:hover {
+    background-position: right center;
+}
+
+.form-control {
+    background-color: #ffffff21 !important;
+    color: rgb(0, 0, 0) !important;
+    border: none !important;
+}
