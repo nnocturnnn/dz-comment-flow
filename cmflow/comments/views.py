@@ -13,6 +13,11 @@ from .models import Attachment, Comment, Like  # noqa: F401
 
 
 def base_view(request):
+    """
+
+    :param request: 
+
+    """
     sort = request.GET.get("sort", "date_added")
     direction = request.GET.get("direction", "desc")
     valid_sort_fields = ["user_name", "email", "date_added"]
@@ -43,6 +48,11 @@ def base_view(request):
 
 @require_http_methods(["POST"])
 def comment_add(request):
+    """
+
+    :param request: 
+
+    """
     recaptcha_response = request.POST.get("g-recaptcha-response")
     data = {
         "secret": os.getenv("RECAPTCHA_SECRET_KEY"),
@@ -130,6 +140,11 @@ def comment_add(request):
 
 @require_http_methods(["POST"])
 def like_add(request):
+    """
+
+    :param request: 
+
+    """
     comment_id = request.POST.get("comment_id")
     user_id = request.session.get(
         "user_id", request.user.id
@@ -153,6 +168,11 @@ def like_add(request):
 
 @require_http_methods(["POST"])
 def like_remove(request):
+    """
+
+    :param request: 
+
+    """
     comment_id = request.POST.get("comment_id")
     user_id = request.session.get(
         "user_id", request.user.id
@@ -176,7 +196,11 @@ def like_remove(request):
 
 
 def get_new_like_count(comment_id):
-    """Retrieve the updated like count for a specific comment."""
+    """Retrieve the updated like count for a specific comment.
+
+    :param comment_id: 
+
+    """
     try:
         comment = Comment.objects.get(comment_id=comment_id)
     except Comment.DoesNotExist:
