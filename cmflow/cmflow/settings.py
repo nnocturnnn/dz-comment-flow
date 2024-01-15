@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 from google.oauth2 import service_account
 
@@ -81,10 +82,21 @@ WSGI_APPLICATION = "cmflow.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+db_url = urlparse(
+    os.getenv(
+        "DATABASE_URL", "postgres://postgres:postgres@localhost:5432/postgres"
+    )  # noqa: E501
+)
+
+# Configure the DATABASES setting
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": db_url.path[1:],  # Database name
+        "USER": db_url.username,  # Database user
+        "PASSWORD": db_url.password,  # Database password
+        "HOST": db_url.hostname,  # Database host
+        "PORT": db_url.port,  # Database port
     }
 }
 
