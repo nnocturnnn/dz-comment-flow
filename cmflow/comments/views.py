@@ -4,23 +4,31 @@ import jwt
 import requests
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.http import HttpResponseForbidden, JsonResponse
-from django.shortcuts import redirect, render
+from django.http import HttpResponseForbidden
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .misc import upload_to_bucket
-from .models import Attachment, Comment, Like  # noqa: F401
+from .models import Attachment
+from .models import Comment
+from .models import Like
 
 
 def base_view(request):
+    """
+
+    :param request:
+
+    """
     sort = request.GET.get("sort", "date_added")
     direction = request.GET.get("direction", "desc")
     valid_sort_fields = ["user_name", "email", "date_added"]
     sort = "date_added" if sort not in valid_sort_fields else sort
     order_by_field = sort if direction == "asc" else f"-{sort}"
     comments_list = Comment.objects.prefetch_related("attachments").order_by(
-        order_by_field
-    )  # noqa: E501
+        order_by_field)  # noqa: E501
 
     paginator = Paginator(comments_list, 25)
 
@@ -30,8 +38,7 @@ def base_view(request):
     for comment in comments:
         comment.like_count = Like.objects.filter(comment=comment).count()
         comment.is_liked = Like.objects.filter(
-            user=request.session.get("user_id"), comment=comment
-        ).exists()
+            user=request.session.get("user_id"), comment=comment).exists()
         comment.save()
 
     context = {
@@ -43,14 +50,18 @@ def base_view(request):
 
 @require_http_methods(["POST"])
 def comment_add(request):
+    """
+
+    :param request:
+
+    """
     recaptcha_response = request.POST.get("g-recaptcha-response")
     data = {
         "secret": os.getenv("RECAPTCHA_SECRET_KEY"),
         "response": recaptcha_response,
     }
-    result = requests.post(
-        "https://www.google.com/recaptcha/api/siteverify", data=data
-    )  # noqa: E501
+    result = requests.post("https://www.google.com/recaptcha/api/siteverify",
+                           data=data)  # noqa: E501
     result_json = result.json()
 
     if not result_json.get("success"):
@@ -73,11 +84,9 @@ def comment_add(request):
         email = request.POST.get("email")
         text = request.POST.get("text")
         photo = (  # noqa: F841
-            request.FILES.get("photo") if "photo" in request.FILES else None
-        )
+            request.FILES.get("photo") if "photo" in request.FILES else None)
         file = (  # noqa: F841
-            request.FILES.get("file") if "file" in request.FILES else None
-        )
+            request.FILES.get("file") if "file" in request.FILES else None)
         home_page_url = request.POST.get("home_page_url")
         parent_comment_id = request.POST.get("reply_id")
 
@@ -85,12 +94,10 @@ def comment_add(request):
         if parent_comment_id:
             try:
                 parent_comment = Comment.objects.get(
-                    comment_id=parent_comment_id
-                )  # noqa: E501
+                    comment_id=parent_comment_id)  # noqa: E501
             except Comment.DoesNotExist:
-                return JsonResponse(
-                    {"message": "Parent comment not found"}, status=404
-                )  # noqa: E501
+                return JsonResponse({"message": "Parent comment not found"},
+                                    status=404)  # noqa: E501
 
         # Create and save the comment
         comment = Comment(
@@ -130,10 +137,14 @@ def comment_add(request):
 
 @require_http_methods(["POST"])
 def like_add(request):
+    """
+
+    :param request:
+
+    """
     comment_id = request.POST.get("comment_id")
     user_id = request.session.get(
-        "user_id", request.user.id
-    )  # Use session user_id for anonymous users
+        "user_id", request.user.id)  # Use session user_id for anonymous users
 
     # Ensure the comment exists
     try:
@@ -153,10 +164,14 @@ def like_add(request):
 
 @require_http_methods(["POST"])
 def like_remove(request):
+    """
+
+    :param request:
+
+    """
     comment_id = request.POST.get("comment_id")
     user_id = request.session.get(
-        "user_id", request.user.id
-    )  # Use session user_id for anonymous users
+        "user_id", request.user.id)  # Use session user_id for anonymous users
 
     # Ensure the comment exists
     try:
@@ -176,7 +191,11 @@ def like_remove(request):
 
 
 def get_new_like_count(comment_id):
-    """Retrieve the updated like count for a specific comment."""
+    """Retrieve the updated like count for a specific comment.
+
+    :param comment_id:
+
+    """
     try:
         comment = Comment.objects.get(comment_id=comment_id)
     except Comment.DoesNotExist:
