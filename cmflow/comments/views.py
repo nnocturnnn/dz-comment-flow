@@ -13,11 +13,15 @@ from .models import Attachment, Comment, Like  # noqa: F401
 
 
 def base_view(request):
-    comments_list = (
-        Comment.objects.prefetch_related("attachments")
-        .all()
-        .order_by("-date_added")  # noqa: E501
-    )
+    sort = request.GET.get("sort", "date_added")
+    direction = request.GET.get("direction", "desc")
+    valid_sort_fields = ["user_name", "email", "date_added"]
+    sort = "date_added" if sort not in valid_sort_fields else sort
+    order_by_field = sort if direction == "asc" else f"-{sort}"
+    comments_list = Comment.objects.prefetch_related("attachments").order_by(
+        order_by_field
+    )  # noqa: E501
+
     paginator = Paginator(comments_list, 25)
 
     page_number = request.GET.get("page")
@@ -29,8 +33,6 @@ def base_view(request):
             user=request.session.get("user_id"), comment=comment
         ).exists()
         comment.save()
-        if comment.attachments.all():
-            print(comment.attachments.all()[0])
 
     context = {
         "comments": comments,
