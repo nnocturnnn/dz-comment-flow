@@ -19,7 +19,7 @@ from .models import Like
 def base_view(request):
     """
 
-    :param request: 
+    :param request:
 
     """
     sort = request.GET.get("sort", "date_added")
@@ -54,7 +54,7 @@ def base_view(request):
 def comment_add(request):
     """
 
-    :param request: 
+    :param request:
 
     """
     recaptcha_response = request.POST.get("g-recaptcha-response")
@@ -146,7 +146,7 @@ def comment_add(request):
 def like_add(request):
     """
 
-    :param request: 
+    :param request:
 
     """
     comment_id = request.POST.get("comment_id")
@@ -174,7 +174,7 @@ def like_add(request):
 def like_remove(request):
     """
 
-    :param request: 
+    :param request:
 
     """
     comment_id = request.POST.get("comment_id")
@@ -202,7 +202,7 @@ def like_remove(request):
 def get_new_like_count(comment_id):
     """Retrieve the updated like count for a specific comment.
 
-    :param comment_id: 
+    :param comment_id:
 
     """
     try:
