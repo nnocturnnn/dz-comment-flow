@@ -34,7 +34,7 @@
                     <a href="#!" class="replyLink" data-reply-id="{{ comment.comment_id }}"><i style="color: black;" class="fas fa-reply fa-xs"></i><span class="small"></span></a>
                 </div>
                 <p class="small mb-0">
-                    {{ comment.text | safe}}
+                    {{ comment.text |escape_html|safe}}
                 </p>
                 <div class="attachments">
                     {% for attachment in comment.attachments.all %}

@@ -1,3 +1,5 @@
+import html
+
 from django import template
 
 from ..models import Like
@@ -15,3 +17,8 @@ def startswith(text, starts):
 @register.filter(name="user_has_liked")
 def user_has_liked_comment(comment, user):
     return Like.objects.filter(comment=comment, user=user).exists()
+
+
+@register.filter(name="escape_html")
+def escape_html(value):
+    return html.unescape(value)

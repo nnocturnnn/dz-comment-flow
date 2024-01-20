@@ -119,7 +119,7 @@ def comment_add(request):
             )
             attachment.save()
 
-        return redirect("/")
+        return redirect("spa")
 
     except jwt.ExpiredSignatureError:
         return HttpResponseForbidden("Token has expired")
