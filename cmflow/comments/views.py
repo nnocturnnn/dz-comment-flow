@@ -5,7 +5,7 @@ import requests
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .misc import upload_to_bucket
@@ -21,24 +21,15 @@ def base_view(request):
     comments_list = Comment.objects.prefetch_related("attachments").order_by(
         order_by_field
     )  # noqa: E501
-
     paginator = Paginator(comments_list, 25)
 
     page_number = request.GET.get("page")
     comments = paginator.get_page(page_number)
-
-    for comment in comments:
-        comment.like_count = Like.objects.filter(comment=comment).count()
-        comment.is_liked = Like.objects.filter(
-            user=request.session.get("user_id"), comment=comment
-        ).exists()
-        comment.save()
-
     context = {
         "comments": comments,
         "jwt_token": request.session.get("jwt_token", ""),
     }  # noqa: E501
-    return render(request, "test.html", context)
+    return render(request, "index.html", context)
 
 
 @require_http_methods(["POST"])
@@ -119,7 +110,21 @@ def comment_add(request):
             )
             attachment.save()
 
-        return redirect("spa")
+        try:
+            response_data = {
+                "message": "Comment added successfully",
+                "comment": {
+                    "id": comment.comment_id,
+                    "user_name": comment.user_name,
+                    "text": comment.text,
+                    "home_page_url": comment.home_page_url,
+                    # Add other relevant fields
+                },
+            }
+            return JsonResponse(response_data)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
     except jwt.ExpiredSignatureError:
         return HttpResponseForbidden("Token has expired")

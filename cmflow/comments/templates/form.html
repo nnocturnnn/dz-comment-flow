@@ -96,23 +96,17 @@ function postComment(event) {
         },
         credentials: 'include'  // Necessary for cookies (including CSRF token) to be sent
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        console.log(data.message);  // Log the response message
-        // Clear the form fields
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        console.log(data.message);
         document.getElementById('commentForm').reset();
-        // Display a success message
-        displayFeedback('Comment posted successfully!', 'success');
+        window.location.reload();
     })
     .catch(error => {
-        console.error('Error:', error);  // Log any errors
-        // Display an error message
-        displayFeedback('Failed to post comment: ' + error, 'danger');
+        console.error('Error:', error);
     });
 }
 
