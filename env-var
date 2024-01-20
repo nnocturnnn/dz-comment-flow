@@ -1,0 +1,6 @@
+
+RECAPTCHA_SECRET_KEY=secretkey
+
+GOOGLE_APPLICATION_CREDENTIALS=/home/alex/Downloads/My First Project-1c0c9c9e8e6e.json
+
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/alex
