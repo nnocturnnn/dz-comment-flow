@@ -1,5 +1,9 @@
 # SPA Commenting Application
 
+## Slow-load
+Time load page with sqlite 0.2s
+Time load page with free postgress 16.1s
+
 ## Overview
 This Single Page Application (SPA) allows users to leave comments, similar to a forum or a comment section on a blog post. The application is built using Django and a front-end framework of your choice (Vue, React, Angular). Users can post comments, reply to them, and sort comments based on various criteria.
 
