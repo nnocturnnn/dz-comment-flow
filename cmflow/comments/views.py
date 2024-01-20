@@ -8,7 +8,8 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from .misc import upload_to_bucket
+from .misc import check_image_format  # noqa: F401
+from .misc import check_file, check_image_size, scale_image, upload_to_bucket
 from .models import Attachment, Comment, Like  # noqa: F401
 
 
@@ -92,21 +93,46 @@ def comment_add(request):
             parent_comment=parent_comment,
         )
         comment.save()
-
         if photo:
+            if not check_image_format(
+                photo,
+                [
+                    "JPG",
+                    "JPEG",
+                    "GIF",
+                    "PNG",
+                    "jpg",
+                    "jpeg",
+                    "gif",
+                    "png",
+                ],  # noqa: E501
+            ):
+                return JsonResponse(
+                    {"error": "Invalid image format"}, status=405
+                )  # noqa: E501
+
+            if not check_image_size(photo, 320, 240):
+                photo = scale_image(photo, 320, 240)
+            # Upload the processed photo
             photo_url = upload_to_bucket(photo.name, photo, photo.content_type)
             attachment = Attachment(
                 comment=comment,
                 file_path=photo_url,
-                file_type=photo.content_type,  # noqa: E501
+                file_type=photo.content_type,
             )
             attachment.save()
         if file:
+            if not check_file(file):
+                return JsonResponse(
+                    {"error": "Invalid file size or format"}, status=405
+                )
+
+            # Upload the file
             file_url = upload_to_bucket(file.name, file, file.content_type)
             attachment = Attachment(
                 comment=comment,
                 file_path=file_url,
-                file_type=file.content_type,  # noqa: E501
+                file_type=file.content_type,
             )
             attachment.save()
 

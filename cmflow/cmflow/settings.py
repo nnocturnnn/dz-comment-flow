@@ -91,12 +91,8 @@ db_url = urlparse(
 # Configure the DATABASES setting
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": db_url.path[1:],  # Database name
-        "USER": db_url.username,  # Database user
-        "PASSWORD": db_url.password,  # Database password
-        "HOST": db_url.hostname,  # Database host
-        "PORT": db_url.port,  # Database port
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
