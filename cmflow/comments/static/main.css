@@ -7,7 +7,7 @@ body {
     background-color: #ffffff21 !important;
 }
 
-.sorting-buttons a, .toolbar button  {
+.sorting-buttons a, .toolbar button, .step-links a  {
     background-color: #ffffff21 !important;
     color: black !important;
     border: none !important;

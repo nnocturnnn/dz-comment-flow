@@ -73,8 +73,7 @@ function escapeHTML(text) {
 
 function updatePreview() {
     var inputText = document.getElementById('text').value;
-    var escapedText = escapeHTML(inputText);
-    document.getElementById('preview').textContent = escapedText;
+    document.getElementById('preview').innerHTML = inputText;
 }
 </script>
 <script>
@@ -82,6 +81,11 @@ function postComment(event) {
     event.preventDefault();  // Prevent the default form submission
 
     var formData = new FormData(document.getElementById('commentForm'));
+    var textElement = document.getElementById('text');
+    if (textElement) {
+        var escapedText = escapeHTML(textElement.value);
+        formData.set('text', escapedText); // Update the 'text' field in the FormData
+    }
     const jwtToken = document.getElementById('jwtToken').value;  // Retrieve the JWT token
 
     fetch('/comment_add', {
