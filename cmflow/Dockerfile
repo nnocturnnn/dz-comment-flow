@@ -15,8 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . /usr/src/app/
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+EXPOSE 8080
 
 # Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "cmflow.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "cmflow.wsgi:application"]
